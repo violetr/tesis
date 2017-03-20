@@ -58,11 +58,11 @@ En el archivo ``seleccion_modelo_binario.R`` se encuentran las siguientes funcio
 (con criterio EBIC, CV, stability selection)
 
 
-## Simulaciones y an\'alisis de datos
+## Simulaciones y análisis de datos
 
 ### Modelo normal
 
-* ``3_2_1_3_tradeoff.R``: gráfico error, sesgo y varianza vs. lambda para el m\'etodo *lasso*.
+* ``3_2_1_3_tradeoff.R``: gráfico error, sesgo y varianza vs. lambda para el método *lasso*.
 
 * ``3_7_1_reg.R``: simulación regresión lineal con *lasso*, *adaptive*, *thresholded* y *ridge*.
 
@@ -70,9 +70,9 @@ En el archivo ``seleccion_modelo_binario.R`` se encuentran las siguientes funcio
 * ``3_7_2_consistencia.R``: gráfico de la consistencia en la estimación de la matriz de precisión  para normal simulada.
 
 
-* ``3_7_3_grafperdida.R``: gr\'afico de la p\'erdida con *GLasso*, *Adaptive GLasso* y *Gelato* para ``arabidopsis`` y normal simulada.
+* ``3_7_3_grafperdida.R``: gráfico de la pérdida con *GLasso*, *Adaptive GLasso* y *Gelato* para ``arabidopsis`` y normal simulada.
 
-* ``3_7_4_ribo.R``: selecci\'on de modelo para ``hdi::riboflavin`` con *Stability Selection*. 
+* ``3_7_4_ribo.R``: selección de modelo para ``hdi::riboflavin`` con *Stability Selection*. 
 
 
 
