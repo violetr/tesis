@@ -44,7 +44,7 @@ En el archivo ``seleccion_modelo_normal.R`` se encuentran las siguientes funcion
 * Gelato (nodewise+threshold): ``cv.Gelato``
 
 
-### Estimaci\'on del grafo discreto
+### Estimación del grafo discreto
 
 * Chow-Liu: ``gRapHD::minForest``
 
