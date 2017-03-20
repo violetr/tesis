@@ -1,5 +1,7 @@
 # METODOS seleccion modelo normal
 
+source('./auxiliares.R')
+
 # estimacion del grafo normal:
 # Adaptive GLasso: adaptive.glasso
 # (Adaptive)GLasso CV: cv.glasso
@@ -158,7 +160,7 @@ stability.selection.grafico<-function(datos,lambda,B,nsubmuestra=floor(nrow(dato
   #matriz donde guardo los valores de probabilidad estimada
   pi=matrix(rep(0,p*p),ncol=p)
   
-  #numero de aristas que voy a tomar como máximo:
+  #numero de aristas que voy a tomar como m?ximo:
   #si ninguna de las elegidas 
   q=floor(sqrt(expfalsepos*p*(2*pithr-1))) 
   
