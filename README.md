@@ -10,9 +10,9 @@ A continuacion damos los nombres de las funciones usadas. Los archivos se encuen
 
 * lasso, ridge: ``glmnet::glmnet/cv.glmnet``
 
-En el archivo ``regresion_lineal.R</tt> se encuentran las siguientes funciones:
+En el archivo ``regresion_lineal.R`` se encuentran las siguientes funciones:
 
-* adaptive lasso cv: ``cv.adaptive.lasso</tt>
+* adaptive lasso cv: ``cv.adaptive.lasso``
 
 * thresholded lasso cv: ``cv.tau.threslasso``
 
@@ -62,15 +62,15 @@ En el archivo ``seleccion_modelo_binario.R`` se encuentran las siguientes funcio
 
 # Modelo normal
 
-* ``3_2_1_3_tradeoff.R``: gr\'afico error, sesgo y varianza vs. $\lambda$ para el m\'etodo *lasso*.
+* ``3_2_1_3_tradeoff.R``: gráfico error, sesgo y varianza vs. lambda para el m\'etodo *lasso*.
 
-* ``3_7_1_reg.R``: simulaci\'on regresi\'on lineal con *lasso*, *adaptive*, *thresholded* y *ridge*.
-
-
-* ``3_7_2_consistencia.R``: gr\'afico de la consistencia en la estimaci\'on de la matriz de precisi\'on  para normal simulada.
+* ``3_7_1_reg.R``: simulación regresión lineal con *lasso*, *adaptive*, *thresholded* y *ridge*.
 
 
-* ``3_7_3_grafperdida.R``: gr\'afico de la p\'erdida con *GLasso``, *Adaptive GLasso* y *Gelato*``* para \cite{arabidopsis`` y normal simulada.
+* ``3_7_2_consistencia.R``: gráfico de la consistencia en la estimación de la matriz de precisión  para normal simulada.
+
+
+* ``3_7_3_grafperdida.R``: gr\'afico de la p\'erdida con *GLasso*, *Adaptive GLasso* y *Gelato* para ``arabidopsis`` y normal simulada.
 
 * ``3_7_4_ribo.R``: selecci\'on de modelo para ``hdi::riboflavin`` con *Stability Selection*. 
 
@@ -79,12 +79,12 @@ En el archivo ``seleccion_modelo_binario.R`` se encuentran las siguientes funcio
 # Modelos discretos
 
 
-* ``4_2_1_prostate.R``: clasificaci\'on de los datos ``spls::prostate``.
+* ``4_2_1_prostate.R``: clasificación de los datos ``spls::prostate``.
 
-* ``4_4_1_palabras.R``: selecci\'on de modelo para datos \cite{news``.
+* ``4_4_1_palabras.R``: selección de modelo para datos ``news``.
 
 
-* ``4_4_2_dipus.R``: selecci\'on de modelo para datos  de diputados en \cite{decadavotada``.
+* ``4_4_2_dipus.R``: selección de modelo para datos  de diputados en ``decadavotada``.
 
 
 * ``4_4_3_bin.R``: simulaci\'on de selecci\'on de modelo para datos binarios.
