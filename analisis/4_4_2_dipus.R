@@ -1,12 +1,13 @@
 #########################bibliotecas#########################
 
-library(glmnet)
-library(IsingFit)
-library(igraph)
-library(GGally)
-library(network)
 
-source('C:/Users/violeta/Dropbox/codR/auxiliares.R')
+if (!require(IsingFit)) {
+  install.packages(IsingFit)
+  library(IsingFit)
+}
+
+source('./metodos/seleccion_modelo_normal.R')
+source('./auxiliares.R')
 
 #############################################################
 
@@ -54,14 +55,10 @@ contarFaltas<-function(columna){
 
 ############################datos##############################
 
-votos<-read.csv("C:\\Users\\violeta\\Downloads\\DecadaVotadaCSV\\votaciones-diputados.csv")
-diputados<-read.csv("C:\\Users\\violeta\\Downloads\\DecadaVotadaCSV\\diputados.csv")
-asuntos<-read.csv("C:\\Users\\violeta\\Downloads\\DecadaVotadaCSV\\asuntos-diputados.csv")
+votos<-read.csv('./datos/votaciones-diputados.csv')
+diputados<-read.csv('./datos/diputados.csv')
+asuntos<-read.csv('./datos/asuntos-diputados.csv')
 
-#dim(votos)
-#head(votos)
-#head(diputados)
-#head(asuntos)
 
 asuntosselec=asuntos[asuntos$ano>=2013 & asuntos$ano<=2015,1]
 length(asuntosselec)

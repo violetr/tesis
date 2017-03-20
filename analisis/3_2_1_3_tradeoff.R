@@ -1,5 +1,7 @@
 # SIMU 3.2.1.3
 
+source('./auxiliares.R')
+
 ######################################################################
 #####analisis sesgo varianza lasso distintos valores de lambda########
 

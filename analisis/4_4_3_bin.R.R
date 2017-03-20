@@ -1,13 +1,16 @@
-library(glmnet)
-library(IsingFit)
-library(IsingSampler)
-library(igraph)
-library(GGally)
-library(network)
-library(gRapHD)
-library(graph)
 
-source('C:/Users/violeta/Dropbox/codR/auxiliares.R')
+packages=c('isingFit','IsingSampler','gRapHD')
+
+for (package in packages) {
+  if (!require(package, character.only=T, quietly=T)) {
+    install.packages(package)
+    library(package, character.only=T)
+  }
+}
+
+
+source('./metodos/seleccion_modelo_binario.R')
+source('./auxiliares.R')
 
 #############################################################
 
@@ -68,7 +71,7 @@ for(i in 1:dim(adytrue)[1]){
   adytrue[i,i]=FALSE
 } 
 
-pdf("C:/Users/violeta/Dropbox/tesisvio/grilla4n.pdf")
+pdf('./resultados/grilla4n.pdf')
 grilla<- network::network(adytrue, directed = FALSE)
 ggnet2(grilla,edge.color = "black",color="black",mode="kamadakawai")
 dev.off()
@@ -191,7 +194,7 @@ ggnet2(estrella,edge.color = "lightgrey",label=TRUE)
 
 ############################# GRAFICO ###############################
 
-pdf("C:/Users/violeta/Dropbox/tesisvio/simudiscretas1.pdf")
+pdf('./resultados/simudiscretas1.pdf')
 
 aciertosNLR<-c(0,0, 0.02, 0.98, 0.96,  1.0, 1.00)
 aciertosCL<-c(0,0.02,0.08,0.52,0.52,0.7,0.76)

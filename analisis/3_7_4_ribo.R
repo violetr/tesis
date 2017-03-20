@@ -2,8 +2,14 @@
 ##############################bibliotecas #############################
 
 #en esta esta implementado stability selection para regresion, y estan los datos riboflavin
-library(hdi)
-source('C:/Users/violeta/Dropbox/tesis violeta/codR/glasso.R')
+
+if (!require(hdi)) {
+  install.packages("hdi")
+  library(hdi)
+}
+
+source('./metodos/seleccion_modelo_normal.R')
+source('./auxiliares.R')
 
 #######################################################################
 ############################### datos #################################
@@ -41,7 +47,7 @@ pithr=0.75
 #################################### graficos #################################
 
 #grafico 1: stability seleccion en modelos graficos - dataset riboflavin
-par(mfrow=c(2,5)) 
+
 grafo(var(submuestraribo),0.27,TRUE)
 grafo(var(submuestraribo),0.29,TRUE)
 grafo(var(submuestraribo),0.3,TRUE)
@@ -56,7 +62,6 @@ stability.selection.grafico(submuestraribo,0.35,1000,floor(nrow(submuestraribo)/
 
 
 #grafico 2: stability seleccion en modelos graficos - todo permutado (grafo subyacente vacio)
-par(mfrow=c(2,5)) 
 grafo(var(todopermutado),0.08,TRUE)
 grafo(var(todopermutado),0.07,TRUE)
 grafo(var(todopermutado),0.06,TRUE)

@@ -5,11 +5,15 @@
 #analisis thaliana con glasso y nodewise regression con thresholded lasso distintos tau
 #replicar grafico Fig 13.3 buhlmann, pagina 443
 
-#bibliotecas usadas: library(glmnet),library(glasso),library(igraph),library(RColorBrewer),library(matrixcalc) 
+#bibliotecas usadas: library(glmnet),library(glasso),library(igraph),library(RColorBrewer)
 
-source('C:/Users/violeta/Dropbox/codR/auxiliares.R')
-source('C:/Users/violeta/Dropbox/codR/cvglasso.R')
-source('C:/Users/violeta/Dropbox/codR/nodewisereg.R')
+if (!require(MASS)) {
+  install.packages(MASS)
+  library(MASS)
+}
+
+source('./metodos/seleccion_modelo_normal.R')
+source('./auxiliares.R')
 
 ######################################################################################################################
 ############################################# cargo y centro datos ###################################################
@@ -18,7 +22,7 @@ source('C:/Users/violeta/Dropbox/codR/nodewisereg.R')
 #como estimo la matriz de precision 39*39=1521, n=118
 
 #cargo datos
-datosthalia=read.table('C:/Users/violeta/Dropbox/tesis violeta/datos/datosthaliana.txt',header = TRUE)
+datosthalia=read.table('./datos/datosthaliana.txt',header = TRUE)
 matrizthalia=t(datosthalia[,7:length(datosthalia)])
 
 # centro los datos
@@ -172,10 +176,6 @@ grupos=kfoldgrupos(n,10)
 figura13.3(matrizthalia,grupos,and=FALSE)
 
 # SIMU fig 13.3
-
-library(MASS)
-library(base)
-library(glasso)
 
 p=40
 n=180

@@ -1,4 +1,15 @@
+
+library(glmnet)
+
+source('./auxiliares.R')
+
 # estimacion modelo binario
+
+# auxiliar
+
+EBIC<-function(n,p,logl,gamma,tamJ){
+  -2*logl+tamJ*log(n)+2*gamma*tamJ*log(p-1)
+}
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 
@@ -15,7 +26,7 @@
 # and: Regla para establecer el vecindario (AND o OR)
 # metodo: metodo para la seleccion del parametro
 #         de penalizacion lambda. opciones:
-#         c("CV","wain","EBIC")
+#         c("CV","EBIC")
 
 # OUTPUT:
 # matriz de parametros estimados Theta

@@ -5,9 +5,21 @@
 #forma de grilla, distintos p, n aumentando, nrep repeticiones
 
 #normales multivariadas
-library(MASS)
-library(base)
-library(glasso)
+
+packages=c('MASS')
+
+for (package in packages) {
+  if (!require(package, character.only=T, quietly=T)) {
+    install.packages(package)
+    library(package, character.only=T)
+  }
+}
+
+
+source('./metodos/seleccion_modelo_normal.R')
+source('./auxiliares.R')
+
+#################################################################
 
 p=120
 nrep=50
@@ -44,7 +56,7 @@ for(iter in 1:nrep){
 
 p=c(64,120,350)
 
-pdf("C:/Users/violeta/Dropbox/tesisvio/cap2simu3.pdf")
+pdf('./resultados/3_7_2_simu.pdf')
 plot(grilla,error1/(nrep),type='b',col="blue",ylab="",xlab="")
 legend("topright", 
        c("p=64","p=120","p=350"),

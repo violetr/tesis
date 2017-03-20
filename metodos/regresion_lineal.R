@@ -1,13 +1,12 @@
 # METODOS reglineal
 
-library(glmnet)
-library(matrixcalc)
+source('./auxiliares.R')
+
 
 # regresion lineal:
-#   adaptive lasso cv: 
-#   thresholded lasso cv:
-#   stability selection:
-#   
+#   adaptive lasso cv
+#   thresholded lasso cv
+
 
 #adaptive lasso
 

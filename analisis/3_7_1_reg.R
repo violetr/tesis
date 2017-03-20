@@ -9,16 +9,11 @@
 # en la segunda parte hago un analisis del sesgo y la varianza para 
 # lasso con distintos valores de lambda
 
-library(glmnet)
-library(matrixcalc)
-#colores
-library(RColorBrewer)
-
 #semilla
 set.seed(2017)
 
-source('C:/Users/violeta/Dropbox/codR/auxiliares.R')
-source('C:/Users/violeta/Dropbox/codR/thresholdedlasso.R')
+source('./metodos/regresion_lineal.R')
+source('./auxiliares.R')
 
 ###################################################################
 #auxiliares
