@@ -1,4 +1,4 @@
-### TESIS
+# TESIS
 código en R usado en la tesis de licenciatura :rocket:
 
 ## Código de los métodos utilizados
@@ -6,7 +6,7 @@ código en R usado en la tesis de licenciatura :rocket:
 A continuacion damos los nombres de las funciones usadas. Los archivos se encuentran en la carpeta ``metodos``.
 
 
-# Regresión lineal
+### Regresión lineal
 
 * lasso, ridge: ``glmnet::glmnet/cv.glmnet``
 
@@ -17,14 +17,14 @@ En el archivo ``regresion_lineal.R`` se encuentran las siguientes funciones:
 * thresholded lasso cv: ``cv.tau.threslasso``
 
 
-# Regresión logística
+### Regresión logística
 
 
 * regresion logistica con penalizacion: ``glmnet::glmnet/cv.glmnet ``
 
 
 
-#Estimación del grafo normal
+### Estimación del grafo normal
 
 
 * GLasso: ``glasso::glasso``
@@ -44,7 +44,7 @@ En el archivo ``seleccion_modelo_normal.R`` se encuentran las siguientes funcion
 * Gelato (nodewise+threshold): ``cv.Gelato``
 
 
-# Estimaci\'on del grafo discreto
+### Estimaci\'on del grafo discreto
 
 * Chow-Liu: ``gRapHD::minForest``
 
@@ -60,7 +60,7 @@ En el archivo ``seleccion_modelo_binario.R`` se encuentran las siguientes funcio
 
 ## Simulaciones y an\'alisis de datos
 
-# Modelo normal
+### Modelo normal
 
 * ``3_2_1_3_tradeoff.R``: gráfico error, sesgo y varianza vs. lambda para el m\'etodo *lasso*.
 
@@ -76,7 +76,7 @@ En el archivo ``seleccion_modelo_binario.R`` se encuentran las siguientes funcio
 
 
 
-# Modelos discretos
+### Modelos discretos
 
 
 * ``4_2_1_prostate.R``: clasificación de los datos ``spls::prostate``.
