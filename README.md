@@ -1,9 +1,9 @@
 ### TESIS
 código en R usado en la tesis de licenciatura :rocket:
 
-## C\'odigo de los m\'etodos utilizados
+## C\`odigo de los m\`etodos utilizados
 
-A continucaci\'on damos los nombres de las funciones usadas. Los archivos se encuentran en la carpeta <tt>metodos<\tt>.
+A continucaci'on damos los nombres de las funciones usadas. Los archivos se encuentran en la carpeta <\tt>metodos<\tt>.
 
 
 # Regresi\'on lineal
