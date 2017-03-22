@@ -60,6 +60,8 @@ En el archivo ``seleccion_modelo_binario.R`` se encuentran las siguientes funcio
 
 ## Simulaciones y análisis de datos
 
+Los siguientes archivos se encuentran en la carpeta ``analisis``.
+
 ### Modelo normal
 
 * ``3_2_1_3_tradeoff.R``: gráfico error, sesgo y varianza vs. lambda para el método *lasso*.
