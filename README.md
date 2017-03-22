@@ -87,4 +87,4 @@ Los siguientes archivos se encuentran en la carpeta ``analisis``.
 
 * ``4_4_2_dipus.R``: selección de modelo para datos  de diputados en ``decadavotada``.
 
-* ``4_4_3_bin.R``: simulaci\'on de selección de modelo para datos binarios.
+* ``4_4_3_bin.R``: simulación de selección de modelo para datos binarios.
