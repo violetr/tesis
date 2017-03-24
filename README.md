@@ -1,5 +1,5 @@
 # TESIS
-código en R usado en la tesis de licenciatura :whale:
+código en R usado en la tesis de licenciatura :rocket:
 
 ## Código de los métodos utilizados
 
