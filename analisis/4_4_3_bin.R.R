@@ -1,5 +1,5 @@
 
-packages=c('isingFit','IsingSampler','gRapHD')
+packages=c('IsingFit','IsingSampler','gRapHD')
 
 for (package in packages) {
   if (!require(package, character.only=T, quietly=T)) {
@@ -71,10 +71,32 @@ for(i in 1:dim(adytrue)[1]){
   adytrue[i,i]=FALSE
 } 
 
+hidden=matrix(rep(0,4*64*64),64*2)
+
+dim(hidden)
+
+hidden[1:64,1:64]=adytrue
+
+hidden[1:64,65:128]=diag(64)
+
+hidden[65:128,1:64]=diag(64)
+
+hidden[65:128,65:128]=matrix(rep(0,64*64),64)
+
 pdf('./resultados/grilla4n.pdf')
 grilla<- network::network(adytrue, directed = FALSE)
-ggnet2(grilla,edge.color = "black",color="black",mode="kamadakawai")
+ggnet2(grilla,size=2.5,mode="kamadakawai",color = coloresh[grilla %v% "color"] ,edge.color = "lightgrey")
 dev.off()
+
+pdf('./resultados/grilla4nhidden.pdf')
+hidden<- network::network(hidden, directed = FALSE)
+coloresh<-c("black","darkslategray4")
+names(coloresh)=c("black","darkslategray4")
+hidden %v% "color"<-c(rep("black",64),rep("darkslategray4",64))
+ggnet2(hidden,size=3,mode="kamadakawai",color = coloresh[hidden %v% "color"] ,edge.color = "lightgrey")
+dev.off()
+
+hidden[,65]
 
 n=15000
 listamuestrasgrilla=list()

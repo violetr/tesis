@@ -43,15 +43,16 @@ set.seed(2017)
 
 #me quedo con solo 1000 textos
 nrosdoc=sample(dim(news$documents)[2],1000)
-parte=news$documents[,nrosdoc]
+nrosdoc2=sample(dim(news$documents)[2],6000)
+parte=news$documents[,nrosdoc2]
 #transpongo
 traspp=t(parte)
 
 # me quedo solo con las palabras que tengan mas de 8 apariciones
 # glmnet devuelve warning en caso contrario y creo falla si no hay ninguna
 # para kfold - cros validation
-nrosvar=obtenerindices(apply(traspp,2,sum)>8)
-traspp=traspp[,apply(traspp,2,sum)>8]
+nrosvar=obtenerindices(apply(traspp,2,sum)>70)
+traspp=traspp[,apply(traspp,2,sum)>70]
 dim(traspp)
 
 # vuelvo binarios los bools
@@ -84,8 +85,10 @@ l <-norm_coords(l, ymin=-1, ymax=1, xmin=-1, xmax=1)
 plot(net3,rescale=FALSE,vertex.color= 'aquamarine2',vertex.frame.color="grey",layout=l*1.5,asp=0.7,vertex.label.color="black",vertex.label.cex=0.8)
 
 
-
-AM=nodewiselogreg(datos,TRUE,"EBIC",gamma=0.00001,nlambda=50)
+AM2=nodewiselogreg(datos,TRUE,"stability",gamma=0.5,nlambda=50)
+AM2=nodewiselogreg(datos,TRUE,"EBIC",gamma=0.5,nlambda=50)
+AM=nodewiselogreg(datos,TRUE,"CV",gamma=0.00001,nlambda=50)
+dim(AM2)
 dim(AM)
 colnames(AM)=nombrescolumnas
 rownames(AM)=nombrescolumnas
@@ -98,6 +101,17 @@ sinisolated=AM[apply(AM,2,sum)!=0,apply(AM,2,sum)!=0]
 
 dim(sinisolated)
 
+colnames(AM2)=nombrescolumnas
+rownames(AM2)=nombrescolumnas
+
+for(i in 1:dim(AM2)[1]){
+  AM2[i,i]=FALSE
+}
+
+sinisolated2=AM2[apply(AM2,2,sum)!=0,apply(AM2,2,sum)!=0]
+
+dim(sinisolated2)
+
 
 holi=apply(subgrafo,2,sum)!=0
 subgrafo=subgrafo[holi,holi]
@@ -108,8 +122,15 @@ net2<- network::network(sinisolated, directed = FALSE)
 #net2 <- graph.adjacency(subgrafo,mode="undirected")
 nombrescolumnas
 
-ggnet2(net2, size=8, label = TRUE, alpha = 1,label.size =3,color = "lightcyan",edge.color = "lightgrey")
+ggnet2(net2, size=8, label = TRUE, alpha = 1,label.size =3,color = "lightcyan",edge.color = "lightgrey",mode="kamadakawai")
 
+net22<- network::network(sinisolated2, directed = FALSE)
+
+#net2 <- graph.adjacency(sinisolated,mode="undirected")
+#net2 <- graph.adjacency(subgrafo,mode="undirected")
+nombrescolumnas
+
+ggnet2(net22, size=8, label = TRUE, alpha = 1,label.size =3,color = "lightcyan",edge.color = "lightgrey",mode="kamadakawai")
 
 plot(net2,vertex.color= 'white',vertex.label.color= "black" , vertex.label.dist=0,vertex.label.cex=0.5,edge.curved=0,vertex.size=15,     edge.arrow.size=0.2,
      edge.color="grey",

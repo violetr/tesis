@@ -51,6 +51,7 @@ nodewiselogreg<-function(datos,and=FALSE,metodo="CV",gamma=0.25,nlambda=100){
     if(metodo=="CV"){
       model=cv.glmnet(datosexplicativos,datos[,i],family="binomial",nfolds=5)
       coeff=coef(model,s="lambda.min")
+  
     }
     if(metodo=="EBIC"){
       model=glmnet(datosexplicativos,datos[,i],family="binomial",nlambda = nlambda)
@@ -76,7 +77,11 @@ nodewiselogreg<-function(datos,and=FALSE,metodo="CV",gamma=0.25,nlambda=100){
       
     }
     if(metodo=="stability"){
-      lambda=17*sqrt(log(p)/n)
+      model=hdi::stability(datosexplicativos,datos[,i],EV=5,args.model.selector = list(family="binomial"),fraction=0.5,threshold = 0.95)
+      seleccionados=model$selected
+      coeff=rep(0,p-1)
+      coeff[seleccionados]=1
+      coeff=c(1,coeff)
     }
     
     for(j in 1:p){
