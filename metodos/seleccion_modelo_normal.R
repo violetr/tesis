@@ -1,6 +1,7 @@
 # METODOS seleccion modelo normal
 
 source('./auxiliares.R')
+source('./metodos/regresion_lineal.R')
 
 # estimacion del grafo normal:
 # Adaptive GLasso: adaptive.glasso
@@ -57,7 +58,7 @@ cv.glasso<-function(datos,grupos,conjlambda=seq(0.000001,1,0.005),dibujar=FALSE,
         estimaglasso<-glasso(strain,rho=lambda,penalize.diagonal = FALSE)$wi  
       }
       neggauss[j]<-neggauss[j]+negativegaussloss(estimaglasso,valid,lambda)
-      lognoceros[j]<-log(sum(estimaglasso!=0))
+      lognoceros[j]<-lognoceros[j]+log(sum(estimaglasso!=0))
     }
     
   }
@@ -65,6 +66,8 @@ cv.glasso<-function(datos,grupos,conjlambda=seq(0.000001,1,0.005),dibujar=FALSE,
   lambda.gana=conjlambda[which.min(neggauss)]
   
   s<-estimadors(datos)
+  
+  lognoceros=lognoceros/k
   
   patronceros=grafo(s,lambda.gana,dibujar)
   
@@ -132,8 +135,6 @@ nodewisereg<-function(datos,tau,and=TRUE,lambda,thresholding=TRUE){
       }
     }
   }
-  
-  cnoceros=log(sum(AM==TRUE))
   
   return(AM)
 }
@@ -236,6 +237,7 @@ cv.Gelato<-function(datos,grupos,conjlambda=seq(0.000001,1,0.005),tau,and=TRUE){
   
   k=length(grupos)
   neggauss<-rep(0,length(conjlambda))
+  lognoceros<-rep(0,length(conjlambda))
   
   for (i in 1:length(grupos)){
     
@@ -260,10 +262,13 @@ cv.Gelato<-function(datos,grupos,conjlambda=seq(0.000001,1,0.005),tau,and=TRUE){
       matrizestimada=glasso(s,rho=0,zero=Indicescero,penalize.diagonal = FALSE)$wi
       
       neggauss[j]<-neggauss[j]+negativegaussloss(matrizestimada,valid,lambda)
+      lognoceros[j]<-lognoceros[j]+log(sum(matrizestimada!=0))
     }
     
   }
   
-  return(list(loss=neggauss,gana=conjlambda[which.min(neggauss)]))
+  lognoceros=lognoceros/k
+  
+  return(list(loss=neggauss,gana=conjlambda[which.min(neggauss)],lognoceros=lognoceros))
 }
 

@@ -32,7 +32,7 @@ matrizthalia=scale(matrizthalia)
 #####################################################################################################################
 #####################################################################################################################
 
-set.seed(2005)
+
 
 ################################################ ESTIMACION CON GLASSO ##############################################
 
@@ -48,7 +48,8 @@ grupos=kfoldgrupos(n,10)
 #ak=c(0.0001,0.01,0.05,0.1,0.3,0.5,1,2,4)
 #lambdasprueba2=ak*sqrt(log(p)/n)
 
-length(seq(0.000001,1,0.005))
+#length(seq(0.000001,1,0.005))
+
 graficoglasso<-function(datos,grupos,  conjlambda=seq(0.000001,1,0.005),
                         lambdaselecc=c(1,2,3,4,5,6,7,10,15,20,53,80,140,180,190),adaptive=FALSE){
   
@@ -97,12 +98,13 @@ graficonodewisereg<-function(datos,grupos,conjlambda=seq(0.000001,1,0.005),
     node=cv.Gelato(datos,grupos,conjlambda2,tau,and)
     
     for(j in 1:nfig){
-      lambda=conjlambda2[j]
-      Matrizbool=nodewisereg(datos,tau,and,lambda)
-      Indicescero=indicescero(Matrizbool)
-      s=var(datos)
-      matrizestimada=glasso(s,rho=0,zero=Indicescero,penalize.diagonal = FALSE)$wi
-      lognnozerostau[i,j]=log(sum(matrizestimada!=0))
+      #lambda=conjlambda2[j]
+      #Matrizbool=nodewisereg(datos,tau,and,lambda)
+      #Indicescero=indicescero(Matrizbool)
+      #s=var(datos)
+      #matrizestimada=glasso(s,rho=0,zero=Indicescero,penalize.diagonal = FALSE)$wi
+      #lognnozerostau[i,j]=log(sum(matrizestimada!=0))
+      lognnozerostau[i,j]=(node$lognoceros)[j]
       neggausslosstau[i,j]=(node$loss)[j]
     }
   }
@@ -152,15 +154,13 @@ figura13.3<-function(datos,grupos,conjtau=c(0.012,0.025,0.045,0.062,0.125),and=T
     points(g2$lognnozeros[i,],g2$neggaussloss[i,],type="b",col=pal3[i])
   }
   
-  neggausslosss=0
-  for(k in 1:length(grupos)){
-    valid=datos[grupos[[k]],]
-    train=datos[-grupos[[k]],]
-    neggausslosss=neggausslosss+negativegaussloss(estimadors(train),valid,0)   
-  }
+  # neggausslosss=0
+  # for(k in 1:length(grupos)){
+  #   valid=datos[grupos[[k]],]
+  #   train=datos[-grupos[[k]],]
+  #   neggausslosss=neggausslosss+negativegaussloss(estimadors(train),valid,0)   
+  # }
   
-  print(neggausslosss)
-    
   #referencias
   
   legend("bottomleft", 
@@ -171,11 +171,15 @@ figura13.3<-function(datos,grupos,conjtau=c(0.012,0.025,0.045,0.062,0.125),and=T
          col=c('black','black',pal3[1:5]))
 }
 
+set.seed(2005)
+
 grupos=kfoldgrupos(n,10)
 
 figura13.3(matrizthalia,grupos,and=FALSE)
 
 # SIMU fig 13.3
+
+set.seed(2016)
 
 p=40
 n=180

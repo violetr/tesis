@@ -62,7 +62,7 @@ threslasso<-function(datosexplicativos,respuesta,tau,lambda){
   
   if(!(length(sthres) && sthres==0)){
     
-    coefthresrefit=as.vector(t(matrix.inverse(t(datosexplicativos[,sthres])%*%t(t(datosexplicativos[,sthres])))%*%t(datosexplicativos[,sthres])%*%respuesta))
+    coefthresrefit=as.vector(t(solve(t(datosexplicativos[,sthres])%*%t(t(datosexplicativos[,sthres])))%*%t(datosexplicativos[,sthres])%*%respuesta))
     for(k in 1:length(sthres)){
       coefthreslasso[sthres[k]]=coefthresrefit[k]  
     }
