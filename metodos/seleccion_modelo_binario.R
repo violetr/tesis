@@ -46,7 +46,7 @@ nodewiselogreg <- function(datos, and=FALSE, metodo="CV", gamma = 0.25, nlambda 
   coeficientes = matrix(rep(1, p * p), p, p)
   
   for (i in 1:p) {
-    print(i)
+
     datosexplicativos <- datos[ , -i]
     if (metodo == "CV") {
       model = cv.glmnet(datosexplicativos, datos[ , i], family = "binomial", nfolds = 5)
@@ -102,13 +102,13 @@ nodewiselogreg <- function(datos, and=FALSE, metodo="CV", gamma = 0.25, nlambda 
   #los de la diagonal quedan en TRUE
   AM = AMi
   for (i in 1:p) {
-    for (j in 1:p) {
-      if (i != j) {
-        if(and == TRUE){
-          AM[i, j] = AMi[i, j] && AMi[j, i]
-        }else{
-          AM[i, j] = AMi[i, j] || AMi[j, i]
-        }
+    for (j in 1:j-1) {
+      if(and == TRUE){
+        AM[i, j] = AMi[i, j] && AMi[j, i]
+        AM[j, i] = AMi[i, j] && AMi[j, i]
+      }else{
+        AM[i, j] = AMi[i, j] || AMi[j, i]
+        AM[j, i] = AMi[i, j] || AMi[j, i]
       }
     }
   }
