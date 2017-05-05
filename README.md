@@ -10,6 +10,8 @@ A continuacion damos los nombres de las funciones usadas. Los archivos se encuen
 
 * lasso, ridge: ``glmnet::glmnet/cv.glmnet``
 
+* stability selection: ``hdi::stability``
+
 En el archivo ``regresion_lineal.R`` se encuentran las siguientes funciones:
 
 * adaptive lasso cv: ``cv.adaptive.lasso``
