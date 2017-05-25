@@ -21,7 +21,7 @@ source('./auxiliares.R')
 
 #################################################################
 
-p = 120
+p = 64
 nrep = 50
 
 Theta = diag(p)
@@ -55,6 +55,50 @@ for (iter in 1:nrep) {
 }
 
 p = c(64, 120, 350)
+
+
+  
+p = 64
+nrep = 50
+
+Theta = diag(p)
+
+for (i in 1:p) {
+  for (j in 1:p) {
+    if (abs(j - i) == 1) {
+      Theta[i, j] = 0.2
+    }
+  }
+}
+
+Sigma = solve(Theta)
+mu = rep(0, p)
+
+grilla <- floor(seq(50, 6000, length.out = 20))
+
+error1 = rep(0, length(grilla))
+
+  
+for (k in 1:length(grilla)) {
+    
+  print(k)
+  N = grilla[k]
+  muestra = mvrnorm(N, mu, Sigma)
+  covarianza=estimadors(muestra)
+  
+  for (iter in 1:nrep) {  
+    
+    grupos = kfoldgrupos(N, 5)
+    lambda = cv.glasso(muestra, grupos = grupos,conjlambda = seq(0.000001, 2, length.out =  25), dibujar = FALSE,adaptive = TRUE)$lambdagana
+    thestimada = adaptive.glasso(covarianza, lambda, penalizardiagonal = FALSE)
+    error1[k] = error1[k] + base::norm(Theta - thestimada, "2")
+    
+  }
+}
+
+p = c(64, 120, 350)
+
+
 
 pdf('./resultados/3_7_2_simu.pdf')
 plot(grilla, error1 / (nrep), type = 'b', col = "blue", ylab = "", xlab = "")
