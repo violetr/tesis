@@ -1,130 +1,82 @@
 #########################bibliotecas#########################
 
+library(IsingFit)
+library(here)
+library(readr)
+library(magrittr)
+library(purrr)
+library(lubridate)
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(extrafont)
+loadfonts()
 
-if (! require(IsingFit)) {
-  install.packages(IsingFit)
-  library(IsingFit)
-}
+####################### cargo datos #########################
 
-source('./metodos/seleccion_modelo_normal.R')
-source('./auxiliares.R')
+asuntos = read_csv(here::here("datos/asuntos-diputados.csv"))
+diputados = read_csv(here::here("datos/diputados.csv"))
+votos = read_csv(here::here("datos/votaciones-diputados.csv"))
+bloques_color = read_csv(here::here("datos/bloques-diputados.csv"))
+
+######################## ordeno #############################
+
+asuntosselec <- asuntos %>% 
+  mutate(fecha = as.Date(fecha, "%m/%d/%Y"))%>%
+  filter(fecha>ymd("2013-12-10"), fecha<ymd("2015-12-9"))%>%
+  select(asuntoId)
+
+votosselec <- votos %>%
+  distinct(asuntoId, diputadoId, bloqueId, voto) %>%  
+  filter(asuntoId %in% asuntosselec$asuntoId, 
+         bloqueId %in% c(66, 67, 64, 109, 136, 179, 17, 18, 19, 172, 78),
+         !(diputadoId %in% 1:10)) 
+
+bloques <- votosselec %>%
+  select(diputadoId,  bloqueId) %>%
+  group_by(diputadoId) %>%
+  top_n(1, bloqueId)
+
+pre_dataset <- votosselec %>%
+  select(-bloqueId) %>%
+  spread(key = diputadoId, value = voto) %>%
+  select(-asuntoId)
+
+# cambio labels
+dataset <- pre_dataset
+dataset[pre_dataset==1 | pre_dataset==2 | pre_dataset==3] <- 0
+dataset[pre_dataset==0] <- 1
+# Elimino los diputados que renunciaron, 
+# que faltaron mucho o sin varianza en el voto
+# porque no los soporta IsingFit
+dataset <- dataset %>%
+  select_if(~all(!is.na(.))) %>%
+  select_if(~sum(.) < nrow(dataset) - 8) %>%
+  select_if(~sum(.) > 8)
+
+apellidos <- map(diputados[10:nrow(diputados), "nombre"], ~ str_split_fixed(.x, ",", n= 2))[[1]][, 1]
+
+matching_tib <- tibble(apellidos = apellidos, ID = as.character(diputados[10:nrow(diputados), ]$diputadoID))
+
+matching_dipu_id <- setNames(apellidos, as.character(diputados[10:nrow(diputados), ]$diputadoID))
+
+diputados_colores = left_join(bloques, 
+                              bloques_color, 
+                              by = c("bloqueId" = "id_bloque")) %>%
+  ungroup()%>%
+  mutate(diputadoId = as.character(diputadoId)) %>%
+  left_join(matching_tib, by = c("diputadoId" = "ID")) %>%
+  select(apellidos, color)
+
+matching_colores = setNames(diputados_colores$color, diputados_colores$apellidos)
+
+dipus_en_grafo <- matching_dipu_id[colnames(dataset)]
+
+colnames(dataset) <- dipus_en_grafo
 
 #############################################################
 
-#auxiliares especificos para este dataset
-
-dameIndiceAsunto <- function(asuntoId, asuntosselec) {
-  return(which(asuntosselec == asuntoId))
-}
-
-dameListaIndicesAsuntos <- function(asuntosId, asuntosselec) {
-  lista = vector()
-  for (i in 1:length(asuntosId)) {
-    lista[i] = dameIndiceAsunto(asuntosId[i], asuntosselec)
-  }
-  return(lista)
-}
-
-dameApellidoDiputado <- function(DiputadoId, datadiputados) {
-  return(unlist(strsplit(as.character(diputados[DiputadoId,2]), split = ", "))[1])  
-}
-
-dameListaApellidos <- function(conjDiputadoId, datadiputados) {
-  lista = vector()
-  for(i in 1:length(conjDiputadoId)){
-    lista[i] = dameApellidoDiputado(conjDiputadoId[i], datadiputados)
-  }
-  return(lista)
-}
-
-dameBloque <- function(DiputadoId, datavotos){
-  return(datavotos[datavotos$diputadoId == DiputadoId, 3][1])
-}
-
-dameListaBloques <- function(conjDiputadoId, datavotos){
-  lista = vector()
-  for (i in 1:length(conjDiputadoId)) {
-    lista[i] = dameBloque(conjDiputadoId[i], datavotos)
-  }
-  return(lista)
-}
-
-contarFaltas <- function(columna) {
-  return(sum(is.na(columna)))
-}
-
-
-############################datos##############################
-
-#as.Date(asuntos$fecha,format='%m/%d/%Y')<as.Date('05/12/2002',format='%m/%d/%Y')
-#  as.Date("2007-06-22")
-
-
-votos <- read.csv('./datos/votaciones-diputados.csv')
-diputados <- read.csv('./datos/diputados.csv')
-asuntos <- read.csv('./datos/asuntos-diputados.csv')
-asuntos$fecha
-
-#asuntosselec = asuntos[asuntos$ano >= 2013 & asuntos$ano <= 2015, 1]
-esta.en.tiempo = as.Date(asuntos$fecha,format='%m/%d/%Y')>as.Date('10/12/2013',format='%m/%d/%Y') & as.Date(asuntos$fecha,format='%m/%d/%Y')<as.Date('9/12/2015',format='%m/%d/%Y')
-asuntosselec = asuntos[esta.en.tiempo, 1]
-
-
-
-
-length(asuntosselec)
-# me quedo con los votos corresp a los asuntos seleccionados cuyos bloques pertenecen
-# a los mas importantes y que no sean el diputado 5 que no esta identificado
-votosselec = votos[votos$asuntoId  %in% asuntos[esta.en.tiempo, 1] & votos$bloqueId %in% c(66, 67, 64, 109, 136, 179, 17, 18, 19, 172) & votos$diputadoId != 5, ]
-
-diputadosselec = unique(votosselec$diputadoId)
-#borro a un par que renunciaron y a los que los reemplazaron
-diputadosselec <- setdiff(diputadosselec, c(296,912,1037,753))
-#dameListaApellidos(diputadosselec,diputados)
-#verificar carac
-#length(diputadosselec)
-#unique(votosselec[votosselec$diputadoId %in% diputadosselec, "bloqueId"])
-#unique(dameListaBloques(diputadosselec,votosselec))
-#unique(votosselec$bloqueId) # hay uno que pertenecio a dos bloques
-
-nasuntos = length(asuntosselec)
-ndiputados = length(diputadosselec)
-
-mis.datitos = as.data.frame(matrix(rep(0, nasuntos * ndiputados), nrow = nasuntos))
-
-# negativo, abstencion y ausente seran computados como 0, positivo como 1.
-# primero miro las abstenciones para eliminar a los que faltaron mucho
-for (j in 1:length(diputadosselec)) {
-  #busco los votos afirmativos (factor 0) y los pongo como 1 en la matriz de datos el valor 0 corresponde
-  # a voto neg abstencion y ausencia
-  votosafirmativos = votosselec[votosselec$diputadoId == diputadosselec[j] & votosselec$voto == 0, ]$asuntoId
-  ausencias = votosselec[votosselec$diputadoId == diputadosselec[j] & votosselec$voto == 3, ]$asuntoId
-  nueva.columna = rep(0, nasuntos)
-  indicesAfirmativos = dameListaIndicesAsuntos(votosafirmativos, asuntosselec)
-  indicesAusencias = dameListaIndicesAsuntos(ausencias, asuntosselec)
-  nueva.columna[indicesAfirmativos] = 1
-  nueva.columna[indicesAusencias] = NA
-  mis.datitos[ , j] = nueva.columna
-}
-
-nrosvar = obtenerindices(apply(mis.datitos, 2, contarFaltas) < nrow(mis.datitos) /4 & apply(mis.datitos, 2, sum,na.rm=TRUE) > 8 & (nrow(mis.datitos) - apply(mis.datitos, 2, sum,na.rm=TRUE)) > 8)
-
-
-nuevadata = mis.datitos[ , nrosvar]
-nuevadata[is.na(nuevadata)] = 0
-
-dim(nuevadata)
-nombrescolumnas = dameListaApellidos(diputadosselec[nrosvar], diputados)
-colnames(nuevadata) = nombrescolumnas
-
-bloques = as.character(dameListaBloques(diputadosselec[nrosvar], votosselec))
-#############################################################
-
-modelo = IsingFit(nuevadata, gamma = 0.18)
-
-names(modelo)
-
-plot(modelo)
+modelo = IsingFit(dataset, gamma = 0.25)
 
 ady = modelo$weiadj !=0 
 for (i in 1:dim(ady)[1]) {
@@ -132,20 +84,22 @@ for (i in 1:dim(ady)[1]) {
 }
 
 negativos<-1*(modelo$weiadj<0)
-
+pesos<- abs(modelo$weiadj)
+length(negativos)
 
 # borro los aislados
-sinisolatedd = ady[apply(ady, 2, sum) != 0, apply(ady, 2, sum) != 0]
-dim(sinisolatedd)
+sinisolatedd = ady[apply(ady, 2, sum, na.rm=TRUE) != 0, apply(ady, 2, sum, na.rm=TRUE) != 0]
 bloquessiniso = bloques[apply(ady, 2, sum) != 0]
 negativossiniso <- negativos[apply(ady, 2, sum) != 0,apply(ady, 2, sum) != 0]
-
+pesossiniso <- pesos[apply(ady, 2, sum) != 0,apply(ady, 2, sum) != 0]
 #####################colores#################################
 
 #coloresh <- c("firebrick2", "dodgerblue2", "gold", "firebrick1", "deepskyblue1", "gold")
-coloresh <- c("paleturquoise1","indianred1", "skyblue", "gold","gold")
+coloresh <- c("paleturquoise1","gold","indianred1","lightgrey", "skyblue")
 
-names(coloresh) = unique(bloques)
+coloresh2 <- c("red","blue", "orange", "green", "red", "yellow", "paleturquoise1", "blue", "black", "red","black","black", "red","red", "blue", "black", "black", "black", "blue", "black", "black", "black","black","red")
+bloques.df[bloques.df$bloqueId == 86, 2]
+names(coloresh2) = unique(bloques)
 
 #indianred1
 # 172 ucr firebrick
@@ -153,9 +107,15 @@ names(coloresh) = unique(bloques)
 # 136 pro gold
 # 18 coalicion civica - ARI firebrick1
 # 109 nuevo encuentro dodgerblue2
+# 64 frente nuevo encuentro
 # 179 union pro gold
 
 ##############################################################
+
+graph <- graph_from_adjacency_matrix(sinisolatedd)
+
+# Not specifying the layout - defaults to "auto"
+
 
 netd <- network::network(sinisolatedd, directed = FALSE)
 
@@ -163,5 +123,64 @@ netd %v% "bloque" <- bloquessiniso
 
 netd %e% "negativo" <- negativossiniso
 
-ggnet2(netd, size = 7, label = TRUE, alpha = 1, label.size = 2, color = coloresh[netd %v% "bloque"], edge.color = ifelse(netd %e% "negativo"==1,"firebrick1","forestgreen"))
+netd %e% "weights" <- pesossiniso
+
+pdf("newwwwww3.pdf",height = 6, width = 18)
+ggnet2(netd, 
+       size = 7, 
+       label = TRUE, 
+       alpha = 1, 
+       label.size = 2, 
+       color = coloresh2[netd %v% "bloque"], 
+       edge.color = ifelse(netd %e% "negativo"==1,"firebrick1","forestgreen"))
+dev.off()
+
+netd <- network::network(ady, directed = FALSE)
+
+netd %v% "bloque" <- bloques
+
+netd %e% "negativo" <- negativos
+
+
+
+pdf("holuuuuu68.pdf",height = 6, width = 18)
+ggnet2(netd, 
+       size = 7, 
+       label = TRUE, 
+       alpha = 1, 
+       label.size = 2, 
+       color = coloresh[netd %v% "bloque"], 
+       edge.color = ifelse(netd %e% "negativo"==1,"firebrick1","forestgreen"))
+dev.off()
+
+################################################################################
+
+holu = igraph::graph_from_adjacency_matrix(sinisolatedd, weighted=TRUE)
+holuu = as_tbl_graph(holu, directed = FALSE)
+
+holii = as_tbl_graph(modelo$weiadj, directed = FALSE)
+
+holuu = holii %>% 
+  activate(nodes) %>%
+  mutate(color_bloque = matching_colores[name]) %>%
+  activate(edges) %>% 
+  mutate(color = weight<0) %>%
+  mutate(weight = abs(weight))
+
+holuu
+
+pdf(here::here("figuras/pruebadipus14.pdf"), height = 15, width = 15)
+ggraph(holuu, layout = 'kk') + 
+  geom_edge_link()+
+  geom_node_point(aes(colour=color_bloque))+ theme_void()+
+  geom_node_text(aes(label = name), repel = TRUE)
+dev.off()
+
+pdf(here::here("figuras/pruebadipus1.pdf"), height = 12, width = 12)
+ggraph(holuu,layout="mds") + 
+  geom_edge_link(aes(width = abs(weight), colour = color), alpha = 0.8) + 
+  geom_node_point(aes(colour=color.bloque))+ theme_graph()+
+  geom_node_text(aes(label = name), repel = TRUE)
+dev.off()
+
 
