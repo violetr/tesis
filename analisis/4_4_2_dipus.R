@@ -75,9 +75,6 @@ diputados_colores <- left_join(bloques,
   select(apellidos, color, bloqueId)%>%
   mutate(color= ifelse(is.na(color), '#85c1e9', color))
 
-diputados_colores %>% filter(bloqueId==64)
-unique(diputados_colores$apellidos)
-
 matching_colores <- setNames(diputados_colores$color, diputados_colores$apellidos)
 matching_bloques <- setNames(diputados_colores$bloqueId, diputados_colores$apellidos)
 matching_bloques_colores <- setNames(unique(diputados_colores$color), unique(diputados_colores$bloqueId))
@@ -101,9 +98,9 @@ grafo <- grafo_crudo %>%
   mutate(link = ifelse(weight > 0, 'positivo', 'negativo')) %>%
   mutate(weight = abs(weight))
 
-pdf(here::here("figuras/pruebadipus36.pdf"), height = 15, width = 15)
+pdf(here::here("figuras/dipus.pdf"), height = 15, width = 15)
 ggraph(grafo) +
-  geom_edge_link(aes(colour = color), alpha = 0.4) +
+  geom_edge_link(aes(colour = link), alpha = 0.4) +
   scale_edge_colour_manual(values=c('#af270f', '#0faf62')) +
   geom_node_text(aes(label = name), repel = TRUE) +
   geom_node_point(aes(filter=bloque==67), size=3, color="#1f77b4" , alpha=0.5) +
