@@ -1,4 +1,4 @@
-######################### bibliotecas#########################
+######################### bibliotecas ########################
 
 library(IsingFit)
 library(here) # to manage finding files, avoiding harcoded personal paths
@@ -83,14 +83,18 @@ dipus_en_grafo <- matching_dipu_id[colnames(dataset)]
 
 colnames(dataset) <- dipus_en_grafo
 
-#############################################################
+########################## modelo ###########################
 
 modelo <- IsingFit(dataset, gamma = 0.25)
 
-#############################################################
+########################### grafo ###########################
 
+# desde matriz de adyacencia a tibble formato ggraph
 grafo_crudo <- as_tbl_graph(modelo$weiadj, directed = FALSE)
 
+# para nodos matcheo con bloque id 
+# para aristas matcheo con positividad
+# pongo los pesos positivos (los negativos dan malas visualizaciones)
 grafo <- grafo_crudo %>%
   activate(nodes) %>%
   mutate(bloque = matching_bloques[name]) %>%
@@ -98,15 +102,18 @@ grafo <- grafo_crudo %>%
   mutate(link = ifelse(weight > 0, 'positivo', 'negativo')) %>%
   mutate(weight = abs(weight))
 
+# aristas verdes y rojas según signo
+# vertices del color del partido correspondiente
+# nombre del vertice: APELLIDO
 pdf(here::here("figuras/dipus.pdf"), height = 15, width = 15)
 ggraph(grafo) +
   geom_edge_link(aes(colour = link), alpha = 0.4) +
   scale_edge_colour_manual(values=c('#af270f', '#0faf62')) +
   geom_node_text(aes(label = name), repel = TRUE) +
-  geom_node_point(aes(filter=bloque==67), size=3, color="#1f77b4" , alpha=0.5) +
-  geom_node_point(aes(filter=bloque==172), size=3, color="#d62728" , alpha=0.5) +
-  geom_node_point(aes(filter=bloque==78), size=3, color="#0b615e" , alpha=0.5) +
-  geom_node_point(aes(filter=bloque==179), size=3, color="#e7ba52" , alpha=0.5) +
-  geom_node_point(aes(filter=bloque==64), size=3, color="#85c1e9" , alpha=0.5) +
+  geom_node_point(aes(filter=bloque==67), size=3, color="#1f77b4", alpha=0.5) +
+  geom_node_point(aes(filter=bloque==172), size=3, color="#d62728", alpha=0.5) +
+  geom_node_point(aes(filter=bloque==78), size=3, color="#0b615e", alpha=0.5) +
+  geom_node_point(aes(filter=bloque==179), size=3, color="#e7ba52", alpha=0.5) +
+  geom_node_point(aes(filter=bloque==64), size=3, color="#85c1e9", alpha=0.5) +
   theme_void()
 dev.off()
