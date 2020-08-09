@@ -3,7 +3,7 @@ código en R usado en la tesis de licenciatura :rocket:
 
 ## Código de los métodos utilizados
 
-A continuacion damos los nombres de las funciones usadas. Los archivos se encuentran en la carpeta ``metodos``.
+A continuacion damos los nombres de tolas las funciones usadas. Los archivos de código se encuentran en la carpeta ``metodos``.
 
 
 ### Regresión lineal
